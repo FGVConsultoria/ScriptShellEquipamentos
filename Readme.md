@@ -7,3 +7,5 @@ Informações de cada script :
 3. monitoramodulosdm4100.sh - Scripit voltado para monitorar a instalação e remoção dos módulos nos DM4100 que tem plataforma diferente dos DMs 4170, 4270, ele também envia mensagem para o grupo de Telegram.
 
 4. liberaaccesslistdm.sh - Script que libera um IP específico na access list dos DMs 4170, 4270 e 4770
+
+5. Script que faz backup dos switchs HP da rede.
