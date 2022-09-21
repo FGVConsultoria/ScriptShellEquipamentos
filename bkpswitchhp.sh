@@ -49,7 +49,12 @@ AcessoHP(){
         V_loop_name=`echo "${IPdm}" | tr "." "_"`
         
         echo "${LimpaDados}" | awk '(NR > 10) {print $0}' > "${RepositorioName}/${V_sw_name}_${V_loop_name}_${V_data}.conf"
-        rm -f "${RepositorioTmp}/${IPdm}.tmp"
+        
+	##################################
+	# Remove com mais de 29 dias
+	##################################
+	find "${RepositorioName}/" -type f -mtime 30 -exec rm -rf {} \;
+	rm -f "${RepositorioTmp}/${IPdm}.tmp"
  }
  
 ##################################
