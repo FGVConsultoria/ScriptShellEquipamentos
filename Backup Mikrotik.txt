@@ -1,0 +1,66 @@
+#######################################
+# Variaveis globais para o MK
+#######################################
+
+# NTP primario
+:global NTP1
+:set NTP1 "255.255.255.255"
+
+# NTP Secundario
+:global NTP2
+:set NTP2 "255.255.255.255"
+
+# Time zone
+:global ZONA
+:set ZONA "America/Bahia"
+
+# Ip do MK
+:global IP
+:set IP "255.255.255.255"
+
+# Ip do Servidor de email
+:global ServidorEmail
+:set ServidorEmail "255.255.255.255"
+
+# Email Origem
+:global FromEmail
+:set FromEmail "from@mail.com"
+
+# Senha Email
+:global PassEmail
+:set PassEmail "123456789"
+
+# Email Destino
+:global FromEmail
+:set ToEmail "to@mail.com"
+
+
+#######################################
+# Configuração NTP
+#######################################
+/system ntp client set enabled=yes primary-ntp=$NTP1 secondary-ntp=$NTP2
+
+#######################################
+# Configuração de Time Zone
+#######################################
+/system clock set time-zone-name=$ZONA
+
+#######################################
+# Configuração de e-mail
+#######################################
+/tool e-mail set address=$ServidorEmail from=<$FromEmail> password="$PassEmail" port=587 start-tls=yes user=$FromEmail
+
+#######################################
+# Script de Backup
+#######################################
+/system script add name=mk_backup dont-require-permissions=yes policy=ftp,reboot,read,write,policy,test,password,sniff,sensitive source="\
+:log info \"backup iniciado\"\r\
+\n/export file=[/system identity get name]\r\
+\n:delay 10\r\
+\n/tool e-mail send to=$ToEmail subject=([/system identity get name] . \" $IP \" . [/system clock get date] . \" backup script\") file=([/system identity get name] . \".rsc\")\r\
+\n:log info \"backup finalizado\"\r\n\r\n"
+
+#######################################
+# Adiciona Scheduler de Backup
+#######################################
+/system scheduler add interval=1d name=mk_backup on-event="/system script run mk_backup" policy=ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon start-time=startup
